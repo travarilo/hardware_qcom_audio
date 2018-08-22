@@ -73,7 +73,9 @@
 #include "platform_api.h"
 #include <platform.h>
 #include "audio_extn.h"
+#ifdef PERF_HINTS_ENABLED
 #include "audio_perf.h"
+#endif
 #include "voice_extn.h"
 #include "ip_hdlr_intf.h"
 #include "ultrasound.h"
@@ -2492,7 +2494,9 @@ int start_input_stream(struct stream_in *in)
     uc_info->out_snd_device = SND_DEVICE_NONE;
 
     list_add_tail(&adev->usecase_list, &uc_info->list);
+#ifdef PERF_HINTS_ENABLED
     audio_streaming_hint_start();
+#endif
     audio_extn_perf_lock_acquire(&adev->perf_lock_handle, 0,
                                  adev->perf_lock_opts,
                                  adev->perf_lock_opts_size);
@@ -2582,14 +2586,18 @@ int start_input_stream(struct stream_in *in)
     check_and_enable_effect(adev);
 
 done_open:
+#ifdef PERF_HINTS_ENABLED
     audio_streaming_hint_end();
+#endif
     audio_extn_perf_lock_release(&adev->perf_lock_handle);
     ALOGD("%s: exit", __func__);
 
     return ret;
 
 error_open:
+#ifdef PERF_HINTS_ENABLED
     audio_streaming_hint_end();
+#endif
     audio_extn_perf_lock_release(&adev->perf_lock_handle);
     stop_input_stream(in);
 error_config:
@@ -3067,7 +3075,9 @@ int start_output_stream(struct stream_out *out)
 
     list_add_tail(&adev->usecase_list, &uc_info->list);
 
+#ifdef PERF_HINTS_ENABLED
     audio_streaming_hint_start();
+#endif
     audio_extn_perf_lock_acquire(&adev->perf_lock_handle, 0,
                                  adev->perf_lock_opts,
                                  adev->perf_lock_opts_size);
@@ -3248,7 +3258,9 @@ int start_output_stream(struct stream_out *out)
         }
     }
 
+#ifdef PERF_HINTS_ENABLED
     audio_streaming_hint_end();
+#endif
     audio_extn_perf_lock_release(&adev->perf_lock_handle);
 
     if (out->usecase == USECASE_AUDIO_PLAYBACK_ULL ||
@@ -3274,7 +3286,9 @@ int start_output_stream(struct stream_out *out)
     ATRACE_END();
     return ret;
 error_open:
+#ifdef PERF_HINTS_ENABLED
     audio_streaming_hint_end();
+#endif
     audio_extn_perf_lock_release(&adev->perf_lock_handle);
     stop_output_stream(out);
 error_config:
