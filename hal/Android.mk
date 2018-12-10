@@ -65,6 +65,10 @@ ifneq ($(filter sdm660,$(TARGET_BOARD_PLATFORM)),)
 endif
 endif
 
+ifeq ($(TARGET_BOARD_AUTO),true)
+  LOCAL_CFLAGS += -DPLATFORM_AUTO
+endif
+
 LOCAL_CFLAGS += -Wno-macro-redefined
 
 LOCAL_HEADER_LIBRARIES := libhardware_headers
@@ -449,6 +453,11 @@ ifeq ($(strip $(AUDIO_FEATURE_ENABLED_PERF_HINTS)), true)
 LOCAL_SHARED_LIBRARIES += libbase libhidlbase libhwbinder libutils android.hardware.power@1.2 liblog
 LOCAL_SRC_FILES += audio_perf.cpp
 LOCAL_CFLAGS += -DPERF_HINTS_ENABLED
+endif
+
+ifeq ($(strip $(AUDIO_FEATURE_ENABLED_EXT_HW_PLUGIN)),true)
+    LOCAL_CFLAGS += -DEXT_HW_PLUGIN_ENABLED
+    LOCAL_SRC_FILES += audio_extn/ext_hw_plugin.c
 endif
 
 LOCAL_HEADER_LIBRARIES += libhardware_headers
