@@ -322,16 +322,35 @@ ifeq ($(strip $(AUDIO_FEATURE_ENABLED_BT_HAL)),true)
     LOCAL_SRC_FILES += audio_extn/bt_hal.c
 endif
 
+ifeq ($(strip $(USE_LIB_PROCESS_GROUP)),true)
+LOCAL_SHARED_LIBRARIES := \
+        liblog \
+        libcutils \
+        libtinyalsa \
+        libtinycompress_vendor \
+        libaudioroute \
+        libdl \
+        libaudioutils \
+        libexpat \
+        libhidltransport \
+        libprocessgroup
+else
 LOCAL_SHARED_LIBRARIES := \
 	liblog \
 	libcutils \
 	libhardware \
 	libtinyalsa \
-	libtinycompress_vendor \
 	libaudioroute \
 	libdl \
 	libaudioutils \
 	libexpat
+endif
+
+ifneq ($(strip $(TARGET_USES_AOSP_FOR_AUDIO)),true)
+    LOCAL_SHARED_LIBRARIES += libtinycompress_vendor
+else
+    LOCAL_SHARED_LIBRARIES += libtinycompress
+endif
 
 LOCAL_C_INCLUDES += \
 	external/tinyalsa/include \
@@ -431,6 +450,16 @@ ifeq ($(strip $(AUDIO_FEATURE_ENABLED_BATTERY_LISTENER)), true)
     LOCAL_STATIC_LIBRARIES := libhealthhalutils
 endif
 
+ifeq ($(strip $(AUDIO_FEATURE_ENABLED_KEEP_ALIVE_ARM_FFV)), true)
+    LOCAL_CFLAGS += -DRUN_KEEP_ALIVE_IN_ARM_FFV
+endif
+
+ifeq ($(strip $(AUDIO_FEATURE_ENABLED_FFV)), true)
+    LOCAL_CFLAGS += -DFFV_ENABLED
+    LOCAL_C_INCLUDES += $(TARGET_OUT_HEADERS)/mm-audio-noship/include/ffv
+    LOCAL_SRC_FILES += audio_extn/ffv.c
+endif
+
 ifeq ($(strip $(AUDIO_FEATURE_ELLIPTIC_ULTRASOUND_SUPPORT)),true)
     LOCAL_CFLAGS += -DELLIPTIC_ULTRASOUND_ENABLED
     LOCAL_SRC_FILES += audio_extn/ultrasound.c
@@ -450,6 +479,16 @@ LOCAL_COPY_HEADERS      := audio_extn/audio_defs.h
 ifeq ($(strip $(AUDIO_FEATURE_ENABLED_SND_MONITOR)), true)
     LOCAL_CFLAGS += -DSND_MONITOR_ENABLED
     LOCAL_SRC_FILES += audio_extn/sndmonitor.c
+endif
+
+ifeq ($(strip $(AUDIO_FEATURE_ENABLED_GCOV)),true)
+    LOCAL_CFLAGS += --coverage -fprofile-arcs -ftest-coverage
+    LOCAL_CPPFLAGS += --coverage -fprofile-arcs -ftest-coverage
+    LOCAL_STATIC_LIBRARIES += libprofile_rt
+endif
+
+ifeq ($(strip $(AUDIO_FEATURE_ENABLED_A2DP_DECODERS)), true)
+    LOCAL_CFLAGS += -DAPTX_DECODER_ENABLED
 endif
 
 ifeq ($(strip $(AUDIO_FEATURE_ENABLED_PERF_HINTS)), true)
