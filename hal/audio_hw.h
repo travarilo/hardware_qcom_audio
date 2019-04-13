@@ -40,6 +40,7 @@
 
 #include <stdlib.h>
 #include <cutils/list.h>
+#include <hardware/audio_amplifier.h>
 #include <hardware/audio.h>
 #include <tinyalsa/asoundlib.h>
 #include <tinycompress/tinycompress.h>
@@ -203,6 +204,9 @@ enum {
     USECASE_AUDIO_EC_REF_LOOPBACK,
 
     USECASE_AUDIO_A2DP_ABR_FEEDBACK,
+
+    USECASE_AUDIO_ULTRASOUND_RX,
+    USECASE_AUDIO_ULTRASOUND_TX,
 
     AUDIO_USECASE_MAX
 };
@@ -539,6 +543,7 @@ struct audio_device {
     unsigned int interactive_usecase_state;
     bool dp_allowed_for_voice;
     void *ext_hw_plugin;
+    amplifier_device_t *amp;
 };
 
 int select_devices(struct audio_device *adev,
