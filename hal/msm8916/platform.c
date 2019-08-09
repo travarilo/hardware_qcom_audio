@@ -2635,9 +2635,9 @@ acdb_init_fail:
         if (!strncmp(snd_card_name, "sdm660", strlen("sdm660"))) {
 
             my_data->current_backend_cfg[DEFAULT_CODEC_BACKEND].bitwidth_mixer_ctl =
-                strdup("INT4_MI2S_RX Format");
+                strdup("INT0_MI2S_RX Format");
             my_data->current_backend_cfg[DEFAULT_CODEC_BACKEND].samplerate_mixer_ctl =
-                strdup("INT4_MI2S_RX SampleRate");
+                strdup("INT0_MI2S_RX SampleRate");
 
             my_data->current_backend_cfg[DEFAULT_CODEC_TX_BACKEND].bitwidth_mixer_ctl =
                 strdup("INT3_MI2S_TX Format");
